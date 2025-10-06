@@ -1,68 +1,231 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🛍️ RC-2 - Complete E-commerce Subscription Platform
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+A modern, feature-rich Next.js e-commerce platform for digital subscriptions with integrated payment system, admin dashboard, and responsive design.
 
-## ✨ Technology Stack
+## ✨ Features
 
-This scaffold provides a robust foundation built with:
+### 🛒 Customer Features
+- **Product Catalog**: Browse digital subscription products by category
+- **Shopping Cart**: Add/remove items with persistent cart storage
+- **Secure Checkout**: Multi-step checkout process with payment integration
+- **Order Management**: View order history and track order status
+- **Hot Deals**: Animated carousel showcasing special offers
+- **Coupon System**: Apply discount codes at checkout
+- **Responsive Design**: Mobile-first design with Tailwind CSS
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### 💳 Payment Integration
+- **RupantorPay Integration**: Complete payment gateway integration
+- **Payment Verification**: Secure payment confirmation and webhook handling
+- **Multiple Payment Methods**: Support for various payment options
+- **Transaction History**: Complete payment tracking and receipts
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### 👨‍💼 Admin Dashboard
+- **Product Management**: Add, edit, delete products with image upload
+- **Order Management**: View, process, and update customer orders
+- **Category Management**: Organize products by categories
+- **Coupon Management**: Create and manage discount codes
+- **Hot Deals Control**: Configure promotional carousel
+- **Analytics Dashboard**: Sales and performance metrics
+- **Settings Management**: Site configuration and preferences
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### 🎨 UI/UX Features
+- **Modern Design**: Clean, professional interface with shadcn/ui components
+- **Dark Mode**: Built-in theme switching support
+- **Loading States**: Skeleton loaders and smooth transitions
+- **Toast Notifications**: User-friendly feedback system
+- **Search Functionality**: Product search with real-time filtering
+- **Image Optimization**: Automatic image processing and optimization
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+## 🛠 Technology Stack
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### Core Framework
+- **⚡ Next.js 15** - React framework with App Router
+- **📘 TypeScript 5** - Type-safe development
+- **🎨 Tailwind CSS 4** - Utility-first CSS framework
+- **🧩 shadcn/ui** - High-quality component library
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+### Database & Backend
+- **🗄️ Prisma ORM** - Type-safe database operations
+- **🐘 PostgreSQL** - Production-ready database
+- **🔐 NextAuth.js** - Authentication system
+- **📧 Email Integration** - Order confirmations and notifications
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+### Payment & APIs
+- **💳 RupantorPay** - Payment gateway integration
+- **🔄 Webhooks** - Real-time payment processing
+- **📡 REST APIs** - Complete API endpoints for all features
 
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### State Management & Tools
+- **🐻 Zustand** - Client state management
+- **🎣 React Hook Form** - Form handling with validation
+- **✅ Zod** - Schema validation
+- **🎯 Lucide React** - Icon library
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- Node.js 18+ 
+- PostgreSQL database
+- RupantorPay account (for payments)
+
+### Installation
+
 ```bash
+# Clone the repository
+git clone https://github.com/raihanetx/RC-2.git
+cd RC-2
+
 # Install dependencies
 npm install
 
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your configuration
+
+# Set up the database
+npx prisma generate
+npx prisma db push
+
+# Seed sample data (optional)
+npm run seed
+
 # Start development server
 npm run dev
+```
 
+### Environment Variables
+
+Create `.env.local` with the following:
+
+```env
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/rc2_db"
+
+# NextAuth
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# RupantorPay
+RUPANTORPAY_API_KEY="your-api-key"
+RUPANTORPAY_SECRET="your-secret-key"
+
+# Email (optional)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
+# Admin
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="admin123"
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   ├── admin/         # Admin endpoints
+│   │   ├── payment/       # Payment processing
+│   │   ├── products/      # Product data
+│   │   └── ...
+│   ├── admin/             # Admin dashboard pages
+│   ├── [categorySlug]/    # Product detail pages
+│   ├── cart/              # Shopping cart
+│   ├── checkout/          # Checkout process
+│   └── ...
+├── components/            # React components
+│   ├── ui/               # shadcn/ui components
+│   └── admin/            # Admin-specific components
+├── lib/                  # Utilities and configurations
+│   ├── db.ts             # Database client
+│   ├── payment.ts        # Payment processing
+│   ├── email.ts          # Email templates
+│   └── ...
+├── hooks/                # Custom React hooks
+└── types/                # TypeScript type definitions
+```
+
+## 🎯 Available Pages
+
+### Customer Pages
+- `/` - Home page with product showcase
+- `/products` - All products grid
+- `/products/category/[slug]` - Category-specific products
+- `/[category]/[product]` - Product detail page
+- `/cart` - Shopping cart
+- `/checkout` - Multi-step checkout
+- `/order-history` - Customer order history
+- `/payment/success` - Payment confirmation
+- `/payment/cancel` - Payment cancellation
+
+### Admin Pages
+- `/admin/login` - Admin login
+- `/admin/dashboard` - Admin dashboard overview
+- `/admin/dashboard/products` - Product management
+- `/admin/dashboard/orders` - Order management
+- `/admin/dashboard/categories` - Category management
+- `/admin/dashboard/coupons` - Coupon management
+- `/admin/dashboard/hot-deals` - Hot deals configuration
+- `/admin/dashboard/settings` - Site settings
+- `/admin/dashboard/analytics` - Performance analytics
+
+## 💳 Payment Integration
+
+The platform includes complete RupantorPay integration:
+
+1. **Payment Initiation**: Secure payment request generation
+2. **Payment Processing**: Real-time payment status tracking
+3. **Webhook Handling**: Automatic payment confirmation
+4. **Order Management**: Payment-linked order processing
+5. **Email Notifications**: Automated payment receipts
+
+## 📧 Email Features
+
+- **Order Confirmations**: Automatic order receipt emails
+- **Payment Notifications**: Payment success/failure alerts
+- **Order Status Updates**: Shipping and delivery notifications
+- **Admin Notifications**: New order alerts for administrators
+
+## 🔧 Development Commands
+
+```bash
+# Development
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+
+# Database
+npx prisma studio    # Open database browser
+npx prisma generate  # Generate Prisma client
+npx prisma db push   # Push schema to database
+npx prisma db seed   # Seed sample data
+
+# Testing
+npm run test         # Run tests
+npm run test:watch   # Run tests in watch mode
+```
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables
+3. Deploy automatically on push to main branch
+
+### Docker
+```bash
+# Build Docker image
+docker build -t rc2-ecommerce .
+
+# Run container
+docker run -p 3000:3000 rc2-ecommerce
+```
+
+### Traditional Hosting
+```bash
 # Build for production
 npm run build
 
@@ -70,73 +233,24 @@ npm run build
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+## 🤝 Contributing
 
-## 🤖 Powered by Z.ai
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+## 📄 License
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+## 🆘 Support
 
-## 📁 Project Structure
-
-```
-src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
-```
-
-## 🎨 Available Features & Components
-
-This scaffold includes a comprehensive set of modern web development tools:
-
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
-
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
-
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
-
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
-
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
-
-## 🤝 Get Started with Z.ai
-
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+For support and questions:
+- Create an issue in the GitHub repository
+- Contact the development team
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
-# C2
+Built with ❤️ for modern e-commerce. Powered by Next.js 15 and cutting-edge web technologies.
