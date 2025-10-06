@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { rupantarPayService } from '@/lib/payment';
+import { rupantorPayService } from '@/lib/payment';
 import { db } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
@@ -33,8 +33,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify payment with Rupantar Pay
-    const verification = await rupantarPayService.verifyPayment(transaction_id);
+    // Check if payment service is configured
+    const paymentConfig = rupantorPayService.getConfig();
+    if (!paymentConfig.configured) {
+      console.warn('Payment service not configured, using fallback verification');
+      
+      // For fallback transactions, mark as paid if status indicates success
+      if (status === 'completed' || status === 'success') {
+        await db.order.update({
+          where: { id: order.id },
+          data: {
+            status: 'paid',
+            paymentStatus: 'completed',
+            paymentId: transaction_id,
+          }
+        });
+
+        return NextResponse.json({
+          success: true,
+          message: 'Payment processed (fallback mode)',
+          order_id: order_id,
+          status: 'completed',
+        });
+      } else {
+        await db.order.update({
+          where: { id: order.id },
+          data: {
+            paymentStatus: status || 'failed',
+          }
+        });
+
+        return NextResponse.json(
+          { 
+            error: 'Payment failed',
+            details: 'Payment service not configured'
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Verify payment with Rupantor Pay
+    const verification = await rupantorPayService.verifyPayment(transaction_id);
 
     if (verification.success && verification.status === 'completed') {
       // Update order status
@@ -116,7 +156,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const verification = await rupantarPayService.verifyPayment(transaction_id);
+    // Check if payment service is configured
+    const paymentConfig = rupantorPayService.getConfig();
+    if (!paymentConfig.configured) {
+      return NextResponse.json({
+        success: false,
+        error: 'Payment service not configured',
+      });
+    }
+
+    const verification = await rupantorPayService.verifyPayment(transaction_id);
 
     return NextResponse.json(verification);
 

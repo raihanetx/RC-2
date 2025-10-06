@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { rupantorPayService } from '@/lib/rupantorpay';
+import { rupantorPayService } from '@/lib/payment';
+import { db } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,24 +30,27 @@ export async function POST(request: NextRequest) {
     }
 
     // Update order status based on payment status
-    if (order_id && status === 'COMPLETED') {
+    if (order_id && (status === 'COMPLETED' || status === 'completed')) {
       try {
-        // Load existing orders
-        const existingOrders = JSON.parse(localStorage.getItem('orderHistory') || '[]');
-        
-        // Find and update the order
-        const orderIndex = existingOrders.findIndex((order: any) => order.id === order_id);
-        if (orderIndex !== -1) {
-          existingOrders[orderIndex].status = 'completed';
-          existingOrders[orderIndex].paymentStatus = 'completed';
-          existingOrders[orderIndex].paymentMethod = payment_method || 'RupantorPay';
-          existingOrders[orderIndex].paidAmount = amount;
-          existingOrders[orderIndex].completedAt = new Date().toISOString();
-          
-          // Save updated orders
-          localStorage.setItem('orderHistory', JSON.stringify(existingOrders));
+        // Find the order in database
+        const order = await db.order.findUnique({
+          where: { orderNumber: order_id }
+        });
+
+        if (order) {
+          await db.order.update({
+            where: { id: order.id },
+            data: {
+              status: 'paid',
+              paymentStatus: 'completed',
+              paymentId: transaction_id,
+              paymentMethod: payment_method || 'RupantorPay',
+            }
+          });
           
           console.log(`Order ${order_id} marked as completed via webhook`);
+        } else {
+          console.warn(`Order ${order_id} not found in database`);
         }
       } catch (orderError) {
         console.error('Error updating order from webhook:', orderError);
@@ -74,8 +78,7 @@ export async function GET() {
   return NextResponse.json({
     message: 'RupantorPay payment webhook endpoint',
     configured: config.configured,
-    merchantId: config.merchantId,
-    isTest: config.isTest,
+    baseUrl: config.baseUrl,
     note: 'This webhook handles payment status updates from RupantorPay'
   });
 }

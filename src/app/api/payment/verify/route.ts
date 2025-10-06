@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { rupantorPayService } from '@/lib/rupantorpay';
+import { rupantorPayService } from '@/lib/payment';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,31 +16,18 @@ export async function POST(request: NextRequest) {
     // Verify payment with RupantorPay
     const verification = await rupantorPayService.verifyPayment(transaction_id);
 
-    if (verification) {
-      // Format response to match expected structure
-      const paymentData = {
-        status: verification.status,
-        fullname: verification.fullname,
-        email: verification.email,
-        amount: verification.amount,
-        transaction_id: verification.transaction_id,
-        trx_id: verification.trx_id,
-        currency: verification.currency,
-        payment_method: verification.payment_method,
-        meta_data: {
-          ...verification.metadata,
-          timestamp: new Date().toISOString()
-        }
-      };
-
+    if (verification && verification.success) {
       return NextResponse.json({
         success: true,
-        data: paymentData,
+        data: verification,
         message: 'Payment verified successfully'
       });
     } else {
       return NextResponse.json(
-        { error: 'Payment verification failed' },
+        { 
+          error: verification?.error || 'Payment verification failed',
+          success: false
+        },
         { status: 400 }
       );
     }
@@ -59,8 +46,7 @@ export async function GET() {
   return NextResponse.json({
     message: 'RupantorPay payment verification endpoint',
     configured: config.configured,
-    merchantId: config.merchantId,
-    isTest: config.isTest,
+    baseUrl: config.baseUrl,
     usage: {
       method: 'POST',
       body: {

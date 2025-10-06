@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { rupantorPayService } from '@/lib/rupantorpay';
+import { rupantorPayService } from '@/lib/payment';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,27 +27,25 @@ export async function POST(request: NextRequest) {
     console.log('Payment API - Using base URL:', origin);
     
     // Create payment with RupantorPay using correct parameters
-    const paymentResult = await rupantorPayService.createPayment({
-      fullname: customerName,
-      email: customerEmail,
-      amount: totalAmount.toString(), // RupantorPay expects string amount
+    const paymentResult = await rupantorPayService.initiatePayment({
+      amount: totalAmount,
+      currency: currency || 'USD',
+      customer_name: customerName,
+      customer_email: customerEmail,
+      customer_phone: customerPhone || '',
+      order_id: orderId,
+      callback_url: `${origin}/api/payment/callback`,
       success_url: `${origin}/payment/success`,
       cancel_url: `${origin}/payment/cancel`,
-      webhook_url: `${origin}/api/payment/webhook`,
-      metadata: {
-        order_id: orderId,
-        customer_phone: customerPhone,
-        items: items,
-        currency: currency
-      },
-      client: new URL(origin).hostname
+      description: `Payment for order ${orderId}`
     });
 
-    if (paymentResult.status === true && paymentResult.payment_url) {
+    if (paymentResult.success && paymentResult.payment_url) {
       return NextResponse.json({
         success: true,
         payment_url: paymentResult.payment_url,
-        message: paymentResult.message
+        transaction_id: paymentResult.transaction_id,
+        message: 'Payment created successfully'
       });
     } else {
       return NextResponse.json(
@@ -74,23 +72,20 @@ export async function GET() {
     message: 'RupantorPay payment creation endpoint',
     configured: config.configured,
     apiKey: config.apiKey ? `${config.apiKey.slice(0, 8)}...` : 'Not configured',
-    isTest: config.isTest,
     baseUrl: config.baseUrl,
     usage: {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': 'your_api_key',
-        'X-CLIENT': 'your_domain'
       },
       body: {
-        fullname: 'string',
-        email: 'string',
-        amount: 'string',
-        success_url: 'string',
-        cancel_url: 'string',
-        webhook_url: 'string (optional)',
-        metadata: 'object (optional)'
+        customerName: 'string',
+        customerEmail: 'string',
+        customerPhone: 'string',
+        items: 'array',
+        totalAmount: 'number',
+        currency: 'string',
+        orderId: 'string'
       }
     }
   });
