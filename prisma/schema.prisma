@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id              String    @id @default(cuid())
+  name            String
+  description     String
+  longDescription String?
+  image           String
+  category        String
+  categorySlug    String
+  slug            String
+  pricing         Json
+  stockOut        Boolean   @default(false)
+  status          String    @default("active")
+  featured        Boolean   @default(false)
+  categoryId      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  hotDeals        HotDeal[]
+  categoryObj     Category? @relation(fields: [categoryId], references: [id])
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  icon      String
+  status    String    @default("active")
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model SiteConfig {
+  id                    String   @id @default(cuid())
+  heroBanner            Json     @default("[]")
+  favicon               String   @default("")
+  contactPhone          String   @default("")
+  contactWhatsapp       String   @default("")
+  contactEmail          String   @default("")
+  adminPassword         String   @default("password123")
+  usdToBdtRate          Float    @default(110)
+  siteLogo              String   @default("")
+  heroSliderInterval    Int      @default(5000)
+  hotDealsSpeed         Int      @default(40)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  rupantarPayBaseUrl    String   @default("https://pay.rupantar.com/api")
+  rupantarPayEnabled    Boolean  @default(false)
+  rupantarPayMerchantId String   @default("")
+  rupantarPaySecret     String   @default("")
+}
+
+model Order {
+  id             String        @id @default(cuid())
+  orderNumber    String        @unique
+  customerId     String?
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  status         String        @default("pending")
+  subtotal       Float
+  total          Float
+  currency       String        @default("USD")
+  deliveryType   String        @default("digital")
+  notes          String?
+  paymentId      String?
+  paymentStatus  String        @default("pending")
+  couponCode     String?
+  couponDiscount Float         @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  customer       User?         @relation(fields: [customerId], references: [id])
+  coupons        OrderCoupon[]
+  items          OrderItem[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String
+  productName String
+  quantity    Int
+  price       Float
+  duration    String
+  createdAt   DateTime @default(now())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Coupon {
+  id              String        @id @default(cuid())
+  code            String        @unique
+  name            String
+  description     String?
+  discountType    String        @default("percentage")
+  discountValue   Float
+  minimumAmount   Float?
+  maximumDiscount Float?
+  usageLimit      Int?
+  usageCount      Int           @default(0)
+  status          String        @default("active")
+  validFrom       DateTime      @default(now())
+  validUntil      DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  orders          OrderCoupon[]
+}
+
+model OrderCoupon {
+  id        String   @id @default(cuid())
+  orderId   String
+  couponId  String
+  discount  Float
+  createdAt DateTime @default(now())
+  coupon    Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model HotDeal {
+  id          String   @id @default(cuid())
+  productId   String
+  customTitle String?
+  customImage String?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
