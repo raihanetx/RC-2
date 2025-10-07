@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { rupantarPayService } from '@/lib/payment';
+import rupantorPayService from '@/lib/payment';
 import { db } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
@@ -84,10 +84,10 @@ export async function POST(request: NextRequest) {
     }
 
     const total = subtotal - couponDiscount;
-    const finalAmount = rupantarPayService.formatAmount(total);
+    const finalAmount = rupantorPayService.formatAmount(total);
 
     // Generate order ID
-    const orderId = rupantarPayService.generateOrderId();
+    const orderId = rupantorPayService.generateOrderId();
 
     // Create order in database
     const order = await db.order.create({
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Initiate payment
-    const paymentResponse = await rupantarPayService.initiatePayment(paymentData);
+    const paymentResponse = await rupantorPayService.initiatePayment(paymentData);
 
     if (paymentResponse.success) {
       // Update order with payment transaction ID
