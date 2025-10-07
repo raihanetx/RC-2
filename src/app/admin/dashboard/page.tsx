@@ -317,7 +317,7 @@ export default function AdminDashboardPage() {
             </Link>
             <Link href="/admin/dashboard/settings">
               <Button className="w-full" variant="outline">
-                <Image className="h-4 w-4 mr-2" />
+                <Image className="h-4 w-4 mr-2" alt="" />
                 Upload Banner
               </Button>
             </Link>
