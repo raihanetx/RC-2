@@ -63,6 +63,8 @@ test-*.ts
 # Documentation (keep important ones)
 *.md
 !README.md
+!VERCEL_DEPLOYMENT_GUIDE.md
+!DEPLOYMENT_GUIDE.md
 
 # Scripts
 scripts/
