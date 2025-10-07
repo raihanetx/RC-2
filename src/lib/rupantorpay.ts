@@ -41,8 +41,8 @@ class RupantorPayService {
 
   constructor() {
     this.config = {
-      apiKey: process.env.RUPANTORPAY_API_KEY || 'test_api_key_123',
-      baseUrl: process.env.RUPANTORPAY_BASE_URL || 'https://payment.rupantorpay.com',
+      apiKey: process.env.RUPANTOR_API_KEY || process.env.RUPANTORPAY_API_KEY || 'MEg5dK0kih7ERNCo0zjZqHNuD58oXWTtnVNGyA8DDN34rrFZx5',
+      baseUrl: process.env.RUPANTOR_BASE_URL || process.env.RUPANTORPAY_BASE_URL || 'https://payment.rupantorpay.com',
       isTest: process.env.NODE_ENV !== 'production'
     };
   }
@@ -151,8 +151,12 @@ class RupantorPayService {
   }
 
   getConfig() {
+    const isConfigured = !!(this.config.apiKey && 
+      this.config.apiKey !== 'test_api_key_123' && 
+      this.config.apiKey !== 'MEg5dK0kih7ERNCo0zjZqHNuD58oXWTtnVNGyA8DDN34rrFZx5');
+    
     return {
-      configured: !!(this.config.apiKey && this.config.apiKey !== 'test_api_key_123'),
+      configured: isConfigured,
       apiKey: this.config.apiKey,
       isTest: this.config.isTest,
       baseUrl: this.config.baseUrl

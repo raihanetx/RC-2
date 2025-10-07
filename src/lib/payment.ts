@@ -37,7 +37,7 @@ class RupantorPayService {
 
   constructor() {
     this.apiKey = process.env.RUPANTOR_API_KEY || '';
-    this.baseUrl = process.env.RUPANTOR_BASE_URL || 'https://api.rupantarpay.com';
+    this.baseUrl = process.env.RUPANTOR_BASE_URL || 'https://payment.rupantorpay.com';
     
     // Don't throw error during build time - only when actually trying to use the service
     if (!this.apiKey && process.env.NODE_ENV === 'production') {
